@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>英語確認テスト</title>
+  <style>
+    body { font-family: sans-serif; }
+    .correct::after { content: " ◯"; color: green; }
+    .incorrect::after { content: " ✕"; color: red; }
+    .answer { font-size: 0.9em; color: blue; display: block; }
+    .diff { color: red; text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <h1>📝 英語確認テスト（単語・文・リスニング）</h1>
+
+  <h2>① 日本語 → 英語（文）</h2>
+  <ol>
+    <li>私はりんごが好きです → <input id="s1"> <span id="s1a" class="answer"></span></li>
+    <li>彼は東京に住んでいます → <input id="s2"> <span id="s2a" class="answer"></span></li>
+  </ol>
+
+  <h2>② 英語 → 日本語（文）</h2>
+  <ol>
+    <li>I play soccer every day. → <input id="s3"> <span id="s3a" class="answer"></span></li>
+    <li>This is my dog. → <input id="s4"> <span id="s4a" class="answer"></span></li>
+  </ol>
+
+  <h2>③ 単語の意味確認</h2>
+  <ol>
+    <li>apple → <input id="s5"> <span id="s5a" class="answer"></span></li>
+    <li>school → <input id="s6"> <span id="s6a" class="answer"></span></li>
+    <li>book → <input id="s7"> <span id="s7a" class="answer"></span></li>
+  </ol>
+
+  <h2>④ リスニング（英文読上げ）</h2>
+  <p>
+    <button onclick="speak('My name is Lisa. I have a cat.')">🔊 再生</button>  
+    この人物が飼っている動物は？ → <input id="s8"> <span id="s8a" class="answer"></span>
+  </p>
+
+  <button onclick="check()">答え合わせ</button>
+
+  <script>
+    const sentences = [
+      ["I like apples.", "s1"], ["He lives in Tokyo.", "s2"],
+      ["私は毎日サッカーをします", "s3"], ["これは私の犬です", "s4"],
+      ["りんご", "s5"], ["学校", "s6"], ["本", "s7"],
+      ["ねこ", "s8"]
+    ];
+
+    function check() {
+      sentences.forEach(([correct, id]) => {
+        const input = document.getElementById(id);
+        const out = document.getElementById(id + "a");
+        const user = input.value.trim();
+        input.className = "";
+        out.innerHTML = "";
+
+        if (user.toLowerCase() === correct.toLowerCase()) {
+          input.classList.add("correct");
+        } else {
+          input.classList.add("incorrect");
+
+          if (/^[a-zA-Z\s]+$/.test(correct)) {
+            let diff = "";
+            for (let i = 0; i < Math.max(user.length, correct.length); i++) {
+              diff += user[i] === correct[i]
+                ? user[i] || ""
+                : `<span class="diff">${user[i] || "_"}</span>`;
+            }
+            out.innerHTML = `（正解：${correct}、あなたの答え：${diff}）`;
+          } else {
+            out.textContent = "（正解：" + correct + "）";
+          }
+        }
+      });
+    }
+
+    function speak(text) {
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = "en-US";
+      speechSynthesis.speak(u);
+    }
+  </script>
+</body>
+</html>

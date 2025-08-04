@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>ゆうの実況サイト開設！</title>
+  
+  <link rel="icon" href="../favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="/Test/Comment.css">
+  <link rel="stylesheet" href="../HTML/dashboard.css">
+  
+  <script src="/HTML/script.js" defer></script> <!-- ✅ 遅延読み込み -->
+</head>
+
+<body style="font-family: 'MyCustomFont', sans-serif;">
+  <h1>サイト開設！</h1>
+  <hr>
+  
+  <p>playitのフリーIPを使ってサイトを作ってみました！</p>
+  <p>サイト一覧はなんか効果音危ない気がするんですが...まあ無視してね...</p>
+
+  <h2>コメントを残す</h2>
+  <input type="text" id="name-input" placeholder="名前を入力..." />
+  <input type="text" id="comment-input" placeholder="コメントを入力..." />
+  <button onclick="addComment()">送信</button>
+
+  <h3>コメント一覧</h3>
+  <ul id="comment-list"></ul>
+
+  <script>
+      function loadComments() {
+          fetch('get_comments.php')
+          .then(response => response.json())
+          .then(data => {
+              let commentList = document.getElementById("comment-list");
+              commentList.innerHTML = "";
+
+              data.comments.forEach(comment => {
+                  let newComment = document.createElement("li");
+                  newComment.textContent = `${comment.name}: ${comment.message}`; // ✅ 「名前: コメント」の形式で表示
+                  commentList.appendChild(newComment);
+              });
+          })
+          .catch(error => console.error("コメント取得エラー:", error));
+      }
+
+      function addComment() {
+          let nameInput = document.getElementById("name-input");
+          let commentInput = document.getElementById("comment-input");
+          let nameText = nameInput.value.trim();
+          let commentText = commentInput.value.trim();
+
+          if (commentText !== "") {
+              fetch('save_comment.php', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                  body: `name=${encodeURIComponent(nameText)}&comment=${encodeURIComponent(commentText)}`
+              })
+              .then(response => response.json())
+              .then(data => {
+                  console.log(data.message);
+                  loadComments();
+                  nameInput.value = "";
+                  commentInput.value = "";
+              })
+              .catch(error => console.error("コメント送信エラー:", error));
+          }
+      }
+
+      window.onload = loadComments;
+  </script>
+
+  <p>
+      <a href="../dashboard/" onmouseover="playHoverSound()" onclick="playClickSound(event)">
+          サイト一覧に戻る
+      </a>
+  </p>
+</body>
+</html>

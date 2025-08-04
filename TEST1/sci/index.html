@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>植物の分類テスト</title>
+  <style>
+    body { font-family: sans-serif; }
+    .correct::after { content: " ◯"; color: green; }
+    .incorrect::after { content: " ✕"; color: red; }
+    .answer { color: blue; font-size: 0.9em; display: block; }
+  </style>
+</head>
+<body>
+  <h1>🌱 植物の分類 確認テスト（記述式）</h1>
+  <p>分類記号（A～F）で答えてください。</p>
+
+  <ol>
+    <li>種子があり、花が咲く植物 → <input id="q1"> <span id="a1" class="answer"></span></li>
+    <li>種子がなく、胞子で増えるが維管束がある → <input id="q2"> <span id="a2" class="answer"></span></li>
+    <li>花はなく、種子があるが果実にならない → <input id="q3"> <span id="a3" class="answer"></span></li>
+    <li>根・茎・葉の区別がなく、湿った場所に育つ → <input id="q4"> <span id="a4" class="answer"></span></li>
+    <li>葉緑体がなく、菌類に分類される → <input id="q5"> <span id="a5" class="answer"></span></li>
+  </ol>
+
+  <button onclick="check()">答え合わせ</button>
+
+  <script>
+    const answers = [
+      ["A", "q1"],
+      ["C", "q2"],
+      ["B", "q3"],
+      ["D", "q4"],
+      ["F", "q5"]
+    ];
+
+    function check() {
+      answers.forEach(([correct, id], idx) => {
+        const input = document.getElementById(id);
+        const output = document.getElementById("a" + (idx + 1));
+        const user = input.value.trim().toUpperCase();
+        input.className = "";
+        output.textContent = "";
+
+        if (user === correct) {
+          input.classList.add("correct");
+        } else {
+          input.classList.add("incorrect");
+          output.textContent = `（正解：${correct}）`;
+        }
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>自動採点テスト</title>
+  <style>
+    .correct::after { content: " ◯"; color: green; margin-left: 5px; }
+    .incorrect::after { content: " ✕"; color: red; margin-left: 5px; }
+    .answer { color: blue; font-size: 0.9em; display: block; margin-left: 10px; }
+  </style>
+</head>
+<body>
+  <h1>📝 英語ミニテスト</h1>
+  <ol>
+    <li>
+      「私は犬が好きです。」→ 英語で？  
+      <input id="q1"> <span id="r1" class="answer"></span>
+    </li>
+    <li>
+      「This is a pen.」→ 日本語で？  
+      <input id="q2"> <span id="r2" class="answer"></span>
+    </li>
+  </ol>
+  <button onclick="check()">答え合わせ</button>
+
+  <script>
+    const answers = [
+      { id: "q1", correct: "I like dogs.", alt: ["i like dogs", "i like dog."] },
+      { id: "q2", correct: "これはペンです。", alt: ["これはペンです", "これがペンです"] }
+    ];
+
+    function check() {
+      answers.forEach((q, i) => {
+        const input = document.getElementById(q.id);
+        const response = document.getElementById("r" + (i + 1));
+        const value = input.value.trim().toLowerCase();
+        input.className = "";
+        response.textContent = "";
+
+        if (
+          value === q.correct.toLowerCase() ||
+          (q.alt && q.alt.map(a => a.toLowerCase()).includes(value))
+        ) {
+          input.classList.add("correct");
+        } else {
+          input.classList.add("incorrect");
+          response.textContent = "正解：" + q.correct;
+        }
+      });
+    }
+  </script>
+</body>
+</html>
