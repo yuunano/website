@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>フォトナのピングを低くする方法</title>
+  
+  <link rel="icon" href="../favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="/Test/Comment.css">
+  <link rel="stylesheet" href="../HTML/dashboard.css">
+  
+  <script src="/HTML/script.js" defer></script> <!-- ✅ 遅延読み込み -->
+</head>
+
+<body style="font-family: 'MyCustomFont', sans-serif;">
+  <h1>フォトナのピングを低くする方法</h1>
+  <hr>
+  
+  <p>winキーを押してcmdと入力する</p>
+  <img src="img/image.png" alt="cmd">
+  <p>このような画面が出ると思うので管理者として実行。</p>
+  <img src="img/UAC.png" alt="UAC">
+  <p>この画面ではハイをクリック</p>
+  <img src="img/cmd.png" alt="aCMD">
+  <p>コンナ画面が出るので</p> 
+  <p>ここにこのコマンドをコピペしてエンター</p>
+  <p>ipconfig /flushdns</p>
+  <p>以上です!</p>
+  <h2>コメントを残す</h2>
+  <input type="text" id="name-input" placeholder="名前を入力..." />
+  <input type="text" id="comment-input" placeholder="コメントを入力..." />
+  <button onclick="addComment()">送信</button>
+
+  <h3>コメント一覧</h3>
+  <ul id="comment-list"></ul>
+
+  <script>
+      function loadComments() {
+          fetch('get_comments.php')
+          .then(response => response.json())
+          .then(data => {
+              let commentList = document.getElementById("comment-list");
+              commentList.innerHTML = "";
+
+              data.comments.forEach(comment => {
+                  let newComment = document.createElement("li");
+                  newComment.textContent = `${comment.name}: ${comment.message}`; // ✅ 「名前: コメント」の形式で表示
+                  commentList.appendChild(newComment);
+              });
+          })
+          .catch(error => console.error("コメント取得エラー:", error));
+      }
+
+      function addComment() {
+          let nameInput = document.getElementById("name-input");
+          let commentInput = document.getElementById("comment-input");
+          let nameText = nameInput.value.trim();
+          let commentText = commentInput.value.trim();
+
+          if (commentText !== "") {
+              fetch('save_comment.php', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                  body: `name=${encodeURIComponent(nameText)}&comment=${encodeURIComponent(commentText)}`
+              })
+              .then(response => response.json())
+              .then(data => {
+                  console.log(data.message);
+                  loadComments();
+                  nameInput.value = "";
+                  commentInput.value = "";
+              })
+              .catch(error => console.error("コメント送信エラー:", error));
+          }
+      }
+
+      window.onload = loadComments;
+  </script>
+
+
+</body>
+</html>

@@ -1,0 +1,100 @@
+/* 🎨 カスタムフォントの設定 */
+@font-face {
+    font-family: "MyCustomFont";
+    src: url("fonts/HappyRuika-07_0.TTF") format("truetype");
+}
+
+/* 🌟 全体のデザイン */
+body {
+    font-family: "MyCustomFont", sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+}
+
+/* 🏠 コンテンツを中央配置 */
+.container {
+    width: 80%;
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column; /* 縦に並べる */
+    align-items: center; /* 中央揃え */
+}
+
+/* 🎯 見出しデザイン */
+h1 {
+    font-size: 2rem;
+    color: #ff6363;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+}
+
+/* 🔗 リンクデザイン */
+a {
+    display: inline-block; /* ← クリック範囲をテキストの幅に合わせる */
+    padding: 5px 10px; /* ← クリックしやすいよう適度な余白を追加 */
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.3s ease-in-out;
+}
+
+a:hover {
+    color: #0056b3;
+}
+
+hr {
+    display: block; /* `<hr>` をブロック要素として正常化 */
+    border: none; /* 枠線を消す */
+    margin: 10px 0; /* 余白を適切に設定 */
+}
+
+.device-message {
+    display: inline; /* ✅ 余分な改行を防ぐ */
+}
+
+/* 🎨 全体のスタイル */
+body {
+    font-family: "MyCustomFont", sans-serif;
+    background-color: #ffcccc;
+    color: #333;
+    text-align: center;
+    padding: 20px;
+}
+
+/* ⚠️ 見出しデザイン */
+h1 {
+    font-size: 2rem;
+    color: #ff0000;
+    font-weight: bold;
+}
+
+/* 🔧 警告メッセージ */
+p {
+    font-size: 1.2rem;
+    color: #444;
+}
+
+/* 🚀 リンクボタン */
+a {
+    display: inline-block;
+    font-size: 1.5rem;
+    background: #ff6363;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: 0.3s ease-in-out;
+}
+
+a:hover {
+    background: #d94a4a;
+    transform: scale(1.05);
+}
