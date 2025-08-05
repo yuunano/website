@@ -85,9 +85,9 @@
 
           const delBtn = document.createElement("button");
           delBtn.textContent = "削除";
-          delBtn.onclick = () => {
-            db.collection(pageId).doc(doc.id).delete().then(loadComments);
-          };
+          //delBtn.onclick = () => {
+          //  db.collection(pageId).doc(doc.id).delete().then(loadComments);
+          //};
           li.appendChild(delBtn);
           list.appendChild(li);
         });
@@ -116,6 +116,7 @@
 <!--忘れがちだからメモ:believe-instrumentation.gl.at.ply.gg:20405-->
 </body>
 </html>
+
 
 
 
