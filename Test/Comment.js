@@ -14,7 +14,7 @@ const db = firebase.firestore();
 
 // ページごとのコレクションIDを自動生成（例：dashboard.html → "dashboard"）
 const pathName = window.location.pathname.split("/").pop(); // ファイル名のみ
-const pageID = pathName.replace(/\.html?$/, "") || "home"; // 拡張子削除＆空なら"home"
+const pageID = pathName.replace(/\.html?$/, "") || "sitetest"; // 拡張子削除＆空なら"home"
 
 // コメント読み込み処理
 function loadComments() {
@@ -63,3 +63,4 @@ function addComment() {
 
 // ページ読み込み時にコメント表示
 window.onload = loadComments;
+
