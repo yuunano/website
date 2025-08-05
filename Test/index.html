@@ -1,65 +1,128 @@
-// Firebase設定（実況さんのデータ）
-const firebaseConfig = {
-  apiKey: "AIzaSyA-YiaO54yJ5SidkOs2wPx3z0rG7-ki3rU",
-  authDomain: "yuuwebsite-d888c.firebaseapp.com",
-  projectId: "yuuwebsite-d888c",
-  storageBucket: "yuuwebsite-d888c.firebasestorage.app",
-  messagingSenderId: "521996734577",
-  appId: "1:521996734577:web:52d598ca003a88c494cbd0"
-};
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>ゆうの実況サイト開設！</title>
 
-// 初期化（SDK v8形式）
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+  <!-- アイコンとデザインCSS -->
+  <link rel="icon" href="../favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="/Test/Comment.css">
+  <link rel="stylesheet" href="../HTML/dashboard.css">
+  <script src="/HTML/script.js" defer></script>
 
-// ページごとのコレクションIDを自動生成（例：dashboard.html → "dashboard"）
-const pathName = window.location.pathname.split("/").pop(); // ファイル名のみ
-const pageID = pathName.replace(/\.html?$/, "") || "home"; // 拡張子削除＆空なら"home"
+  <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="comment.js"></script>
 
-// コメント読み込み処理
-function loadComments() {
-  const list = document.getElementById("comment-list");
-  if (!list) return; // コメント表示欄がない場合は無視
 
-  db.collection(pageID).orderBy("timestamp", "desc").get().then(snapshot => {
-    list.innerHTML = "";
-    snapshot.forEach(doc => {
-      const data = doc.data();
-      const item = document.createElement("li");
-      item.textContent = `${data.name}: ${data.message}`;
 
-      const delBtn = document.createElement("button");
-      //delBtn.textContent = "削除";
-      //delBtn.onclick = () => {
-      //  db.collection(pageID).doc(doc.id).delete().then(loadComments);
-      //};
+  <style>
+    body {
+      font-family: 'MyCustomFont', sans-serif;
+      padding: 20px;
+    }
+    input, button {
+      margin: 5px;
+      padding: 6px;
+    }
+    li {
+      margin-bottom: 8px;
+    }
+    #comment-list {
+      margin-top: 10px;
+    }
+  </style>
+</head>
 
-      item.appendChild(delBtn);
-      list.appendChild(item);
-    });
-  });
-}
+<body>
+  <h1>サイト開設！</h1>
+  <hr>
 
-// コメント送信処理
-function addComment() {
-  const nameInput = document.getElementById("name-input");
-  const commentInput = document.getElementById("comment-input");
-  if (!nameInput || !commentInput) return;
+  <p>playitのフリーIPを使ってサイトを作ってみました！</p>
+  <p>サイト一覧はなんか効果音危ない気がするんですが...まあ無視してね...</p>
 
-  const name = nameInput.value.trim() || "名無し実況";
-  const message = commentInput.value.trim();
+  <h2>ページ機能</h2>
+  <ul>
+    <li>GitHub Pagesでサイト公開</li>
+    <li>音声再生・タグ演出つき</li>
+    <li>クラウドコメントで応援メッセージ収集</li>
+  </ul>
 
-  if (message !== "") {
-    db.collection(pageID).add({
-      name,
-      message,
-      timestamp: Date.now()
-    }).then(() => {
-      commentInput.value = "";
-      loadComments();
-    });
-  }
-}
+  <p>
+    <a href="../dashboard/" onmouseover="playHoverSound()" onclick="playClickSound(event)">
+      サイト一覧に戻る
+    </a>
+  </p>
 
-// ページ読み込み時にコメント表示
-window.onload = loadComments;
+  <!-- 🎤 Firebase コメントエリア -->
+  <div style="margin-top: 50px;">
+    <h2>このページへのコメント</h2>
+    <input type="text" id="name-input" placeholder="名前を入力..." />
+    <input type="text" id="comment-input" placeholder="コメントを入力..." />
+    <button onclick="addComment()">送信</button>
+
+    <h3>コメント一覧</h3>
+    <ul id="comment-list"></ul>
+  </div>
+
+  <script>
+    // ✅ 実況さんのFirebase設定（提供いただいた値でOK！）
+    const firebaseConfig = {
+      apiKey: "AIzaSyA-YiaO54yJ5SidkOs2wPx3z0rG7-ki3rU",
+      authDomain: "yuuwebsite-d888c.firebaseapp.com",
+      projectId: "yuuwebsite-d888c",
+      storageBucket: "yuuwebsite-d888c.firebasestorage.app",
+      messagingSenderId: "521996734577",
+      appId: "1:521996734577:web:52d598ca003a88c494cbd0"
+    };
+
+    // 初期化
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // 🔖 サイトごとのコレクション名を分けて管理
+    const pageId = "site_open"; // ←このページ専用のID。他ページなら名前を変えて使ってOK！
+
+    // コメント取得＆表示
+    function loadComments() {
+      db.collection(pageId).orderBy("timestamp", "desc").get().then(snapshot => {
+        const list = document.getElementById("comment-list");
+        list.innerHTML = "";
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const li = document.createElement("li");
+          li.textContent = `${data.name}: ${data.message}`;
+
+          const delBtn = document.createElement("button");
+          delBtn.textContent = "削除";
+          delBtn.onclick = () => {
+            db.collection(pageId).doc(doc.id).delete().then(loadComments);
+          };
+          li.appendChild(delBtn);
+          list.appendChild(li);
+        });
+      });
+    }
+
+    // コメント追加
+    function addComment() {
+      const name = document.getElementById("name-input").value.trim() || "名無し実況";
+      const message = document.getElementById("comment-input").value.trim();
+      if (message !== "") {
+        db.collection(pageId).add({
+          name,
+          message,
+          timestamp: Date.now()
+        }).then(() => {
+          document.getElementById("comment-input").value = "";
+          loadComments();
+        });
+      }
+    }
+
+    // 初期表示
+    window.onload = loadComments;
+  </script>
+</body>
+</html>
