@@ -41,7 +41,77 @@
   お使いのブラウザでは audio タグがサポートされていません。
 </audio>
 
+    <!-- 🎤 Firebase コメントエリア -->
+  <div style="margin-top: 50px;">
+    <h2>このページへのコメント</h2>
+    <input type="text" id="name-input" placeholder="名前を入力..." />
+    <input type="text" id="comment-input" placeholder="コメントを入力..." />
+    <button onclick="addComment()">送信</button>
+
+    <h3>コメント一覧</h3>
+    <ul id="comment-list"></ul>
+  </div>
+
+  <script>
+    // ✅ 実況さんのFirebase設定（提供いただいた値でOK！）
+    const firebaseConfig = {
+      apiKey: "AIzaSyA-YiaO54yJ5SidkOs2wPx3z0rG7-ki3rU",
+      authDomain: "yuuwebsite-d888c.firebaseapp.com",
+      projectId: "yuuwebsite-d888c",
+      storageBucket: "yuuwebsite-d888c.firebasestorage.app",
+      messagingSenderId: "521996734577",
+      appId: "1:521996734577:web:52d598ca003a88c494cbd0"
+    };
+
+    // 初期化
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // 🔖 サイトごとのコレクション名を分けて管理
+    const pageId = "goroku"; // ←このページ専用のID。他ページなら名前を変えて使ってOK！
+
+    // コメント取得＆表示
+    function loadComments() {
+      db.collection(pageId).orderBy("timestamp", "desc").get().then(snapshot => {
+        const list = document.getElementById("comment-list");
+        list.innerHTML = "";
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const li = document.createElement("li");
+          li.textContent = `${data.name}: ${data.message}`;
+
+          const delBtn = document.createElement("button");
+          delBtn.textContent = "削除";
+          delBtn.onclick = () => {
+            db.collection(pageId).doc(doc.id).delete().then(loadComments);
+          };
+          li.appendChild(delBtn);
+          list.appendChild(li);
+        });
+      });
+    }
+
+    // コメント追加
+    function addComment() {
+      const name = document.getElementById("name-input").value.trim() || "名無し実況";
+      const message = document.getElementById("comment-input").value.trim();
+      if (message !== "") {
+        db.collection(pageId).add({
+          name,
+          message,
+          timestamp: Date.now()
+        }).then(() => {
+          document.getElementById("comment-input").value = "";
+          loadComments();
+        });
+      }
+    }
+
+    // 初期表示
+    window.onload = loadComments;
+  </script>
 <!--忘れがちだからメモ:believe-instrumentation.gl.at.ply.gg:20405-->
 </body>
 </html>
+
 
